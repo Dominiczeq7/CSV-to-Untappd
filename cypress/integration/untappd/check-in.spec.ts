@@ -23,6 +23,9 @@ describe("Check-in all bears from CSV to Untappd", () => {
   it("check-in beers", () => {
     cy.get("a.facebook").should("have.text", "Connect with Facebook").click();
 
+    let success_checkins_count = 0;
+    let not_found_beers: String[] = [];
+    let already_have_checkin: String[] = [];
     cy.readFile(Cypress.env("file_path"), "utf-8").then((data) => {
       cy.task("csvToJson", data).then((data: []) => {
         data.forEach((item) => {
@@ -47,7 +50,13 @@ describe("Check-in all bears from CSV to Untappd", () => {
 
           cy.get(":nth-child(1)").then((body) => {
             // if beer is already check-in then skip again check-in
-            if (body.find(".drankit").length > 0) {
+            if (
+              body.find(".beer-item").length == 0 ||
+              body.find(".drankit").length > 0
+            ) {
+              body.find(".beer-item").length == 0
+                ? not_found_beers.push(beer_name)
+                : already_have_checkin.push(beer_name);
               cy.visit("/");
             } else {
               cy.get(":nth-child(1) > .beer-details > .name > a").click();
@@ -58,11 +67,21 @@ describe("Check-in all bears from CSV to Untappd", () => {
                 .invoke("attr", "value", beer_rating);
               cy.get(".checkbottom > .button").click();
               cy.contains("Cheers! We got it!");
+              success_checkins_count += 1;
               cy.get(".cheers-area > .inner > .top > .close").click();
             }
           });
         });
       });
     });
+
+    const result = {
+      "Success check-ins number": success_checkins_count,
+      "Not found": not_found_beers,
+      "Already have check-in": already_have_checkin,
+    };
+
+    const now = Date.now();
+    cy.writeFile(`results/result_${now}.json`, result);
   });
 });

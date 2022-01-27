@@ -1,6 +1,7 @@
 
 cypress.env.json
 beer_data/*.csv
+results/*.json
 
 ### Cypress Custom .gitignore ###
 *.log.*
