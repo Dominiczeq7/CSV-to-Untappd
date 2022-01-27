@@ -28,15 +28,17 @@ describe("Check-in all bears from CSV to Untappd", () => {
         data.forEach((item) => {
           const beer_name = item["Piwo"] + " " + item["Browar"];
           const pre_comment = "Imported by bit.ly/3AuPGH8";
+          // limit is 255 chars on this time (maybe in future can be more), but cutting it do not crash check-in
           let beer_comment = pre_comment + " " + item["Mój komentarz"];
-          beer_comment = beer_comment.substring(0, 255);
 
-          // to avoid integer numbers and make the assessment more realistic
-          const beer_rating =
+          // to avoid integer numbers and make the assessment more realistic ("Średnia ocena" is my optional field)
+          let beer_rating =
             item["Średnia ocena"] == undefined || item["Średnia ocena"] == ""
               ? Number(item["Moja ocena"])
               : (Number(item["Moja ocena"]) + Number(item["Średnia ocena"])) /
                 2;
+          // round to the nearest quarter
+          beer_rating = Number((Math.round(beer_rating * 4) / 4).toFixed(2));
 
           cy.get(".mobile_menu_btn").click();
           cy.get(
