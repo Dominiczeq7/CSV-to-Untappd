@@ -9,8 +9,10 @@
 // ***********************************************
 //
 //
+import "cypress-fill-command";
+
 Cypress.Commands.add("clickIfExist", (element) => {
-  cy.get("body").then((body) => {
+  cy.get("body", { timeout: 5000 }).then((body) => {
     if (body.find(element).length > 0) {
       cy.get(element).click();
     }

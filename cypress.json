@@ -1,5 +1,12 @@
 {
   "chromeWebSecurity": false,
   "experimentalSessionSupport": false,
-  "baseUrl": "https://untappd.com"
+  "numTestsKeptInMemory": 0,
+  "video": false,
+  "baseUrl": "https://untappd.com",
+  "viewportWidth": 1000,
+  "viewportHeight": 660,
+  "redirectionLimit": 1000000,
+  "waitForAnimations": false,
+  "animationDistanceThreshold": 20
 }

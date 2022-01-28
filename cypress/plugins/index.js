@@ -51,4 +51,14 @@ module.exports = async (on, config) => {
       return result;
     },
   });
+
+  on("before:browser:launch", (browser = {}, launchOptions) => {
+    if (browser.name === "chrome") {
+      launchOptions.args.push("--disable-web-security");
+      launchOptions.args.push("--disable-site-isolation-trials");
+      launchOptions.args.push("--max_old_space_size=1500");
+      launchOptions.args.push("--disable-dev-shm-usage");
+      return launchOptions;
+    }
+  });
 };
